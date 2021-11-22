@@ -33,6 +33,7 @@ import time
 from functools import reduce
 from io import BytesIO
 from typing import List, Tuple, Optional, Union, Dict, Type, Sequence
+from requests.structures import CaseInsensitiveDict
 
 from . import util
 from .cip import (
@@ -95,7 +96,6 @@ AtomicValueType = Union[int, float, bool, str]
 TagValueType = Union[AtomicValueType, List[AtomicValueType], Dict[str, "TagValueType"]]
 ReadWriteReturnType = Union[Tag, List[Tag]]
 
-
 class LogixDriver(CIPDriver):
     """
     An Ethernet/IP Client driver for reading and writing tags in ControlLogix and CompactLogix PLCs.
@@ -143,7 +143,7 @@ class LogixDriver(CIPDriver):
         super().__init__(path, *args, **kwargs)
         self._cache = None
         self._data_types = {}
-        self._tags = {}
+        self._tags = CaseInsensitiveDict({})
         self._micro800 = False
         self._cfg["use_instance_ids"] = True
         self._init_args = {
@@ -201,7 +201,7 @@ class LogixDriver(CIPDriver):
         return self.info.get("revision", {}).get("major", 0)
 
     @property
-    def tags(self) -> dict:
+    def tags(self) -> CaseInsensitiveDict:
         """
         Read-only property to access all the tag definitions uploaded from the controller.
         """
@@ -426,7 +426,7 @@ class LogixDriver(CIPDriver):
             tags = self._get_tag_list(program)
 
         if cache:
-            self._tags = {tag["tag_name"]: tag for tag in tags}
+            self._tags = CaseInsensitiveDict({tag["tag_name"]: tag for tag in tags})
 
         self._cache = None
 
