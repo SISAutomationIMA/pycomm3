@@ -76,7 +76,7 @@ from .custom_types import (
     FixedSizeString,
     ModuleIdentityObject,
 )
-from .exceptions import ResponseError, RequestError
+from .exceptions import CommError, ResponseError, RequestError
 from .packets import (
     RequestPacket,
     ReadTagFragmentedRequestPacket,
@@ -305,6 +305,8 @@ class LogixDriver(CIPDriver):
 
             self._info["name"] = response.value
             return self._info["name"]
+        except CommError as err:
+            raise CommError("failed to get the plc name") from err
         except Exception as err:
             raise ResponseError("failed to get the plc name") from err
 
@@ -332,6 +334,8 @@ class LogixDriver(CIPDriver):
                 info["status"][1], "UNKNOWN"
             )
             return info
+        except CommError as err:
+            raise CommError("Failed to get PLC info") from err
         except Exception as err:
             raise ResponseError("Failed to get PLC info") from err
 
@@ -507,6 +511,8 @@ class LogixDriver(CIPDriver):
 
             return tag_list
 
+        except CommError as err:
+            raise CommError("failed to get attribute list") from err
         except Exception as err:
             raise ResponseError("failed to get attribute list") from err
 
@@ -745,6 +751,8 @@ class LogixDriver(CIPDriver):
 
                 offset += len(response_pkt.data)
 
+        except CommError as err:
+            raise CommError("Failed to read template") from err
         except Exception as err:
             raise ResponseError("Failed to read template") from err
         else:
