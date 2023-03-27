@@ -142,7 +142,7 @@ class LogixDriver(CIPDriver):
 
         super().__init__(path, *args, **kwargs)
         self._cache = None
-        self._data_types = {}
+        self._data_types = CaseInsensitiveDict({})
         self._tags = CaseInsensitiveDict({})
         self._micro800 = False
         self._cfg["use_instance_ids"] = True
@@ -235,7 +235,7 @@ class LogixDriver(CIPDriver):
         return json_tags
 
     @property
-    def data_types(self) -> dict:
+    def data_types(self) -> CaseInsensitiveDict:
         """
         Read-only property for access to all data type definitions uploaded from the controller.
         """
@@ -385,7 +385,7 @@ class LogixDriver(CIPDriver):
         )
 
     @with_forward_open
-    def get_tag_list(self, program: str = None, cache: bool = True) -> List[dict]:
+    def get_tag_list(self, program: str = None, cache: bool = True) -> List[CaseInsensitiveDict]:
         """
         Reads the tag list from the controller and the definition for each tag.  Definitions include tag name, tag type
         (atomic vs struct), data type (including nested definitions for structs), external access, dimensions defined (0-3)
