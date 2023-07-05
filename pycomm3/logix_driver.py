@@ -33,7 +33,8 @@ import time
 from functools import reduce
 from io import BytesIO
 from typing import List, Tuple, Optional, Union, Dict, Type, Sequence
-from requests.structures import CaseInsensitiveDict
+
+from .dict import CaseInsensitiveDict
 
 from . import util
 from .cip import (
